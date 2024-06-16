@@ -8,12 +8,13 @@ namespace MvcStartApp.Services.Logging
         {
             var logPath = GetLogPath();
             var file = FSTools.CreateFile(logPath);
+            var text = $"[{DateTime.Now}] {message}";
 
             while (FSTools.IsFileLocked(file)) continue;
 
             using (var sw = file.AppendText())
             {
-                sw.WriteLine(message);
+                sw.WriteLine(text);
             };
         }
 

@@ -4,7 +4,9 @@
     {
         public async Task WriteEntry(string message)
         {
-            Console.WriteLine(message);
+            var text = $"[{DateTime.Now}] {message}";
+
+            Console.WriteLine(text);
         }
     }
 }

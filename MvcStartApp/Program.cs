@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MvcStartApp.DAL.Db;
 using MvcStartApp.DAL.Repositories;
 using MvcStartApp.Middleware;
+using MvcStartApp.Services.Logging;
 
 namespace MvcStartApp
 {
@@ -16,6 +17,9 @@ namespace MvcStartApp
             builder.Services.AddSingleton<IBlogRepository, BlogRepository>();
             builder.Services.AddSingleton<ILogsRepository, LogsRepository>();
             builder.Services.AddDbContext<BlogContext>(options => options.UseSqlServer(dbConnection), ServiceLifetime.Singleton);
+            builder.Services.AddSingleton<Services.Logging.ILogger, FileLogger>();
+            builder.Services.AddSingleton<Services.Logging.ILogger, ConsoleLogger>();
+            builder.Services.AddSingleton<Services.Logging.ILogger, DbLogger>();            
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

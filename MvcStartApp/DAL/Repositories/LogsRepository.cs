@@ -26,7 +26,7 @@ namespace MvcStartApp.DAL.Repositories
 
         public async Task<Request[]> GetEntries()
         {
-            return await _context.Requests.ToArrayAsync();
+            return await _context.Requests.OrderByDescending(x => x.Date).ToArrayAsync();
         }
     }
 }
