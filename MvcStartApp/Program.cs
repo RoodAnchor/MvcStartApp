@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MvcStartApp.DAL.Db;
 using MvcStartApp.DAL.Repositories;
 using MvcStartApp.Middleware;
-using MvcStartApp.Services.Logging;
+using MvcStartApp.Services.Logging.Extensions;
 
 namespace MvcStartApp
 {
@@ -17,18 +17,16 @@ namespace MvcStartApp
             builder.Services.AddSingleton<IBlogRepository, BlogRepository>();
             builder.Services.AddSingleton<ILogsRepository, LogsRepository>();
             builder.Services.AddDbContext<BlogContext>(options => options.UseSqlServer(dbConnection), ServiceLifetime.Singleton);
-            builder.Services.AddSingleton<Services.Logging.ILogger, FileLogger>();
-            builder.Services.AddSingleton<Services.Logging.ILogger, ConsoleLogger>();
-            builder.Services.AddSingleton<Services.Logging.ILogger, DbLogger>();            
             builder.Services.AddControllersWithViews();
+
+            builder.Logging.AddFileLogger();
+            builder.Logging.AddDbLogger();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

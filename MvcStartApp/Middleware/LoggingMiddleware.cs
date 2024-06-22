@@ -1,30 +1,25 @@
 ﻿using MvcStartApp.DAL.Repositories;
-using MvcStartApp.Services.Logging;
 
 namespace MvcStartApp.Middleware
 {
     public class LoggingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogsRepository _logsRepository;
-        private readonly IEnumerable<Services.Logging.ILogger> _loggers;
+        private readonly ILogger _logger;
 
         public LoggingMiddleware(
             RequestDelegate next, 
-            ILogsRepository logsRepository, 
-            IEnumerable<Services.Logging.ILogger> loggers)
+            ILoggerFactory loggerFactory)
         {
             _next = next;
-            _logsRepository = logsRepository;
-            _loggers = loggers;
+            _logger = loggerFactory.CreateLogger<LoggingMiddleware>();
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var message = $"http://{context.Request.Host.Value}{context.Request.Path}";
+            var message = $"[{DateTime.Now}]: http://{context.Request.Host.Value}{context.Request.Path}";
 
-            foreach (var log in _loggers)
-                await log.WriteEntry(message);
+            _logger?.LogInformation(-1, message);
 
             await _next.Invoke(context);
         }
